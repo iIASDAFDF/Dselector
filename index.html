@@ -37,6 +37,9 @@
         .selector2{
             margin:10px auto 30px auto
         }
+        .selector3{
+            margin:10px auto 30px auto
+        }
         .button{
             height:50px;
             width:300px;
@@ -61,6 +64,18 @@
             box-shadow: none;
             border-radius: 5px;
         }
+        .button3{
+            height:50px;
+            width:300px;
+            font-size:18px;
+            margin:10px auto;
+            display: block;
+            background: #ccc;
+            color:#fff;
+            border: none;
+            box-shadow: none;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -73,6 +88,9 @@
     <p>这是我的第二个选择框：</p>
     <div class="selector2"></div>
     <button class="button2" onclick="getData2()">点我在控制台输出选择的数据</button>
+    <p>这是我的第三个选择框：</p>
+    <div class="selector3"></div>
+    <button class="button3" onclick="getData3()">点我在控制台输出选择的数据</button>
 
     <div class="bottom">
         <span style="color:#666;font-size:30px;font-family: '微软雅黑'">欢迎到github来访问我：<a href="https://github.com/iIASDAFDF/Dselector">https://github.com/iIASDAFDF/Dselector</a> </span>
@@ -91,7 +109,15 @@
             data:[{aa:66},{aa:77},{aa:99},{aa:29},{aa:30},{aa:41}],
             key:'aa',//如果您输入的数据类型是一个对象数组，您需要定义‘key’,'key'的值将作为option的显示文本
             width:'300px',
+            module:'typeOne',//您可以选择定义下拉框模式，默认是typeOne多选模式
             color:"chocolate"//您可以定义您的选择框皮肤颜色
+        })
+        var SE3=new Dselect({//typeTwo模式的group只能为1，且不能设置皮肤
+            el:'.selector3',
+            data:[{aa:66},{aa:77},{aa:99},{aa:29},{aa:30},{aa:41}],
+            key:'aa',//如果您输入的数据类型是一个对象数组，您需要定义‘key’,'key'的值将作为option的显示文本
+            width:'300px',
+            module:'typeTwo'
         })
 
 
@@ -100,6 +126,9 @@
         }
         function getData2(){
             console.log(SE2.Selected)
+        }
+        function getData3(){
+            console.log(SE3.Selected)
         }
     </script>
 
