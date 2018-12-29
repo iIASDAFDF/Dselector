@@ -1,7 +1,7 @@
 # Dselector
 一个简单易用的下拉表单，可选择多个选项
 
-     这是1.0版本 目前只有一种选择框形式
+     这是1.1版本 目前只有两种选择框形式
      一个页面可以使用多个选择框！您只需要新建实例对象即可
 演示地址：https://iiasdafdf.github.io/Dselector/
 
@@ -30,7 +30,16 @@
       data:[{aa:66},{aa:77},{aa:99},{aa:29},{aa:30},{aa:41}],
       key:'aa',//如果您输入的数据类型是一个对象数组，您需要定义‘key’,'key'的值将作为option的显示文本
       width:'300px',
+      group:1,//限制可选最大个数
       color:"chocolate"//您可以定义您的选择框皮肤颜色
+    })
+    
+    var SE3=new Dselect({
+      el:'.selector3',
+      data:[{aa:66},{aa:77},{aa:99},{aa:29},{aa:30},{aa:41}],
+      key:'aa',//如果您输入的数据类型是一个对象数组，您需要定义‘key’,'key'的值将作为option的显示文本
+      width:'300px',
+      module:'typeTwo'//开启第二种模式 可以输入和下拉，此模式只能单选
     })
   
   
