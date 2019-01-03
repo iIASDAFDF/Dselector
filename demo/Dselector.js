@@ -7,18 +7,113 @@ function Dselect(param){//构造器
     this.module=param.module||'typeOne'
     this.width=param.width||'300px'
     this.group=param.group||''
+    this.key=param.key||''
+    this.allStyle={
+        boxStyle:`
+            position:relative;
+            min-height:40px;
+            border:1px solid #ccc
+        `,
+        SelectStyle:`
+            max-height:300px;
+            overflow-x: hidden;
+            overflow-y:auto;
+            position: absolute;
+            z-index: 1;top:100%;
+            left:-1px;
+            background:#fff;
+            display:none
+        `,
+        InsurBoxStyle:`
+            display:block;
+            box-sizing:border-box;
+            outline:none;
+            text-align:left;
+            position: relative;
+            padding-bottom:5px;
+            padding-top:5px;
+            overflow: hidden;
+            min-height:30px;
+            top:0px;left:0px;
+            z-index: 10;
+        `,
+        InsurBoxStyleM:`
+            padding-left:10px;
+            min-height:40px;
+            padding-top:8px;
+            padding-bottom:5px;
+            padding-right:25px;
+            box-sizing:border-box;
+        `,
+        TapBtnStyle:`
+            height:100%;
+            width:25px;
+            display:flex;
+            background:#ccc;
+            top:0;
+            right:0;
+            align-items:center;
+            justify-content:center;
+            position:absolute;
+            cursor:pointer;
+            cursor-events:none
+        `,
+        IconStyle:`
+            width:0px;
+            height:0px;
+            border:6px solid #ccc;
+            border-top:10px solid #666;
+            position:relative;
+            top:4px  
+        `,
+        selectItemStyle:`
+            width:99%;
+            margin-top:3px;
+            margin-left:1px;
+            color:#333;
+            box-sizing: border-box;
+            padding: 5px 10px;
+            background: rgb(240,240,240);
+        `,
+        InsurListStyle:`
+           padding:5px 6px;
+           padding-right:30px;
+           margin-left:10px;
+           margin-top:3px;
+           margin-bottom:5px;
+           position: relative;
+           z-index: 99;
+           display:block;
+           float:left;
+           color:#fff;
+           cursor: pointer;
+           pointer-events: all;
+           border-radius:3px 
+        `,
+        CloseIconStyle:`
+           display: flex;
+           position: absolute;
+           font-size:14px;
+           right:10px;
+           top:0px;
+           height:100%;
+           align-items:center;
+           color:#fff;
+           font-family:"微软雅黑";
+           font-style:normal
+        `//样式表
+    }
     if(param.module=='typeTwo'){
         this.group=1
     }
     this.SelectorInit()
 }
 
-Dselect.prototype.SelectorInit=function(){
+Dselect.prototype.SelectorInit=function(){//初始化
     this.createDom()
     this.setStyle()
     this.methods()
 }
-
 
 Dselect.prototype.createDom=function(){//创建基本dom元素
     this.options=[]//下拉选项dom数组
@@ -44,21 +139,46 @@ Dselect.prototype.createDom=function(){//创建基本dom元素
         this.options.push(selectItem)
         this.Select.appendChild(selectItem)
     }.bind(this))
-
     this.Box.appendChild(this.InsurBox)
     this.Box.appendChild(this.Select)
 }
-
+Dselect.prototype.buildItem=function(){//只构建下拉选项
+    this.Data.forEach(function(item){
+        var selectItem=document.createElement('div')
+        selectItem.className='option'
+        selectItem.info=item
+        if(this.param.key){
+            var newKey=this.param.key
+            selectItem.innerHTML=item[newKey]
+        }else{selectItem.innerHTML=item}
+        this.options.push(selectItem)
+        this.Select.appendChild(selectItem)
+    }.bind(this))
+}
+Dselect.prototype.buildItemStyle=function(){//只构建下拉选项样式
+    var that=this
+    this.options.forEach(function(item){
+        item.setAttribute('style',that.allStyle.selectItemStyle)
+        item.onmouseenter=function(){
+            this.style.background=that.color
+            this.style.color="white"
+        }
+        item.onmouseleave=function(){
+            this.style.background="rgb(240,240,240)"
+            this.style.color="#333"
+        }
+    }.bind(this)) 
+}
 Dselect.prototype.setStyle=function(){//设置样式
     var that=this
-    this.Box.setAttribute('style','position:relative;min-height:40px;border:1px solid #ccc')
-    this.Select.setAttribute('style','max-height:300px;overflow-x: hidden;overflow-y:auto;position: absolute;z-index: 1;top:100%;left:-1px;background:#fff;display:none')
-    this.InsurBox.setAttribute('style','display:block;box-sizing:border-box;outline:none;text-align:left;position: relative;padding-bottom:5px;padding-top:5px;overflow: hidden;min-height:30px;top:0px;left:0px;z-index: 10;')
+    this.Box.setAttribute('style',that.allStyle.boxStyle)
+    this.Select.setAttribute('style',that.allStyle.SelectStyle)
+    this.InsurBox.setAttribute('style',that.allStyle.InsurBoxStyle)
     if(this.module=='typeTwo'){
-        this.TapBtn.setAttribute('style','height:100%;width:25px;display:flex;background:#ccc;top:0;right:0;align-items:center;justify-content:center;position:absolute;cursor:pointer;cursor-events:none')//new
-        this.Icon.setAttribute('style','width:0px;height:0px;border:6px solid #ccc;border-top:10px solid #666;position:relative;top:4px')
+        this.TapBtn.setAttribute('style',that.allStyle.TapBtnStyle)//new
+        this.Icon.setAttribute('style',that.allStyle.IconStyle)
         this.InsurBox.setAttribute('contenteditable',true) 
-        this.InsurBox.setAttribute('style','padding-left:10px;min-height:40px;padding-top:8px;padding-bottom:5px;padding-right:25px;box-sizing:border-box;')  
+        this.InsurBox.setAttribute('style',that.allStyle.InsurBoxStyleM)  
     }
 
     this.Box.style.width=this.width
@@ -66,7 +186,7 @@ Dselect.prototype.setStyle=function(){//设置样式
     this.Select.style.border="1px solid "+this.color
 
     this.options.forEach(function(item){
-        item.setAttribute('style','width:99%;margin-top:3px;margin-left:1px;color:#333;box-sizing: border-box;padding: 5px 10px;background: rgb(240,240,240);')
+        item.setAttribute('style',that.allStyle.selectItemStyle)
         item.onmouseenter=function(){
             this.style.background=that.color
             this.style.color="white"
@@ -77,7 +197,6 @@ Dselect.prototype.setStyle=function(){//设置样式
         }
     }.bind(this))
 }
-
 Dselect.prototype.methods=function(){//定义点击事件
     var that=this
     this.Select.onclick=function(e){//点击选项
@@ -117,6 +236,63 @@ Dselect.prototype.methods=function(){//定义点击事件
     this.InsurBox.onfocus=function(e){//typeTwo
         this.onkeyup=function(){
             that.Selected[0]=this.innerHTML
+            if(that.param.match){//匹配模式 开！
+                that.Select.innerHTML=''//清空下拉框
+                that.options=[]//清空选项组
+                var zhi=this.innerHTML//输入的值
+                if(this.innerHTML==''){
+                    that.buildItem()
+                    that.buildItemStyle()
+                }else{
+                    that.Data.forEach(function(item){
+                        var str=that.key?item[that.key].toString():item
+                        if(that.param.match=="greedy"){//贪婪匹配
+                            var selectItem=document.createElement('div')
+                            selectItem.className='option'
+                            selectItem.info=item
+                            for(var i=0;i<str.length;i++){
+                                var list=document.createElement('span')
+                                list.innerHTML=str[i]
+                                for(var j=0;j<zhi.length;j++){
+                                    if(str[i].indexOf(zhi[j])!=-1){
+                                        list.style.color="red"
+                                        selectItem.isMatch=true//匹配成功
+                                    }
+                                }
+                                selectItem.appendChild(list)
+                            }
+                            if(selectItem.isMatch){
+                                that.Select.appendChild(selectItem)//将匹配成功的置入select盒子
+                                that.options.push(selectItem)//选项组里也添加一下
+                            }
+                            
+                        }else{//摄取匹配
+                            if(str.indexOf(zhi)!=-1){
+                                var index=str.indexOf(zhi)
+                                var selectItem=document.createElement('div')
+                                selectItem.className='option'
+                                selectItem.info=item
+                                var b=document.createElement('span')
+                                var c=document.createElement('span')
+                                var d=document.createElement('span')
+                                b.innerHTML=str.substring(0,index)
+                                c.innerHTML=str.substring(index,index+zhi.length)
+                                d.innerHTML=str.substring(index+zhi.length,str.length)
+                                c.style.color="red"
+                                selectItem.appendChild(b)
+                                selectItem.appendChild(c)
+                                selectItem.appendChild(d)
+                                that.Select.appendChild(selectItem)
+                                that.options.push(selectItem)
+                            }
+                        }                       
+                    })
+                    if(that.options.length==0){
+                        that.buildItem()
+                    }
+                    that.buildItemStyle()
+                }
+            }
         }
     }
     if(this.module=='typeTwo'){
@@ -132,7 +308,6 @@ Dselect.prototype.methods=function(){//定义点击事件
 
     }
 }
-
 Dselect.prototype.SelectedChange=function(){//改变选择的选项
     var that=this
     this.InsurBox.innerHTML=''//先清空
@@ -140,10 +315,10 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
         this.Selected.forEach(function(item){
             var InsurList=document.createElement('div')
             var CloseIcon=document.createElement('i')
-            InsurList.setAttribute('style','padding:5px 6px;padding-right:30px;margin-left:10px;margin-top:3px;margin-bottom:5px;position: relative;z-index: 99;display:block;float:left;color:#fff;cursor: pointer;pointer-events: all;border-radius:3px')
+            InsurList.setAttribute('style',that.allStyle.InsurListStyle)
             InsurList.style.background=that.color
             CloseIcon.innerHTML='X'
-            CloseIcon.setAttribute('style','display: flex;position: absolute;font-size:14px;right:10px;top:0px;height:100%;align-items:center;color:#fff;font-family:"微软雅黑";font-style:normal')
+            CloseIcon.setAttribute('style',that.allStyle.CloseIconStyle)
             CloseIcon.info=item
             if(that.param.key){
                 var newKey=that.param.key
@@ -179,8 +354,6 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
     }
     //this.emit()
 }
-
-
 
 Dselect.prototype.emit=function(){//输出数据
     //console.log(this.Selected)

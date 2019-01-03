@@ -23,7 +23,7 @@
         .bottom{
             text-align: center;
             margin-top:100px;
-            padding-bottom: 200px;
+            padding-bottom: 200px
         }
         p{
             margin:100px auto 20px auto;
@@ -110,15 +110,18 @@
             data:[{aa:66},{aa:77},{aa:99},{aa:29},{aa:30},{aa:41}],
             key:'aa',//如果您输入的数据类型是一个对象数组，您需要定义‘key’,'key'的值将作为option的显示文本
             width:'300px',
+            group:1,//定义最多可以选择的个数
             module:'typeOne',//您可以选择定义下拉框模式，默认是typeOne多选模式
             color:"chocolate"//您可以定义您的选择框皮肤颜色
         })
-        var SE3=new Dselect({//typeTwo模式的group只能为1，且不能设置皮肤
+        var SE3=new Dselect({//typeTwo模式的group只能为1
             el:'.selector3',
             data:[{aa:66},{aa:77},{aa:99},{aa:29},{aa:30},{aa:41}],
             key:'aa',//如果您输入的数据类型是一个对象数组，您需要定义‘key’,'key'的值将作为option的显示文本
             width:'300px',
-            module:'typeTwo'
+            module:'typeTwo',
+            color:"chocolate",
+            match:'upmake'//在typeTwo模式下可以开启匹配功能，'upmake'为摄取模式，符合js字符串匹配规则,'greedy'为贪婪模式,可以不按照字符顺序进行匹配
         })
 
 
