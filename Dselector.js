@@ -65,6 +65,7 @@ function Dselect(param){//构造器
             border:6px solid #ccc;
             border-top:10px solid #666;
             position:relative;
+            font-weight:bold;
             top:4px  
         `,
         selectItemStyle:`
@@ -94,10 +95,13 @@ function Dselect(param){//构造器
         CloseIconStyle:`
            display: flex;
            position: absolute;
-           font-size:14px;
-           right:10px;
+           font-size:20px;
            top:0px;
+           right:0px;
            height:100%;
+           width:20px;
+           z-index:9;
+           text-align:center;
            align-items:center;
            color:#fff;
            font-family:"微软雅黑";
@@ -236,12 +240,13 @@ Dselect.prototype.methods=function(){//定义点击事件
     }
     this.InsurBox.onfocus=function(e){//typeTwo
         this.onkeyup=function(){
-            that.Selected[0]=this.innerHTML
+            var zhi=this.innerText//输入的值
+            console.log(zhi)
+            that.Selected[0]=zhi
             if(that.param.match){//匹配模式 开！
                 that.Select.innerHTML=''//清空下拉框
                 that.options=[]//清空选项组
-                var zhi=this.innerHTML//输入的值
-                if(this.innerHTML==''){
+                if(zhi==''){
                     that.buildItem()
                     that.buildItemStyle()
                 }else{
@@ -318,7 +323,7 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
             var CloseIcon=document.createElement('i')
             InsurList.setAttribute('style',that.allStyle.InsurListStyle)
             InsurList.style.background=that.color
-            CloseIcon.innerHTML='X'
+            CloseIcon.innerHTML='×'
             CloseIcon.setAttribute('style',that.allStyle.CloseIconStyle)
             CloseIcon.info=item
             if(that.param.key){
@@ -333,7 +338,8 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
         this.SelectedDom.forEach(function(item){//删除选项
             item.onclick=function(e){
                 e.stopPropagation()
-                if(e.target.nodeName=='I'){
+                if(e.target.nodeName=='I'||e.target.nodeName=='FONT'){
+                    console.log(77)
                     var index=that.Selected.indexOf(e.target.info)
                     that.Selected.splice(index,1)
                     that.SelectedChange()
