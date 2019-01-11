@@ -116,8 +116,8 @@
         })
         var SE3=new Dselect({//typeTwo模式的group只能为1
             el:'.selector3',
-            data:[{aa:66},{aa:77},{aa:99},{aa:29},{aa:30},{aa:41}],
-            key:'aa',//如果您输入的数据类型是一个对象数组，您需要定义‘key’,'key'的值将作为option的显示文本
+            data:[345,34,235,11,445],
+            //key:'aa',//如果您输入的数据类型是一个对象数组，您需要定义‘key’,'key'的值将作为option的显示文本
             width:'300px',
             module:'typeTwo',
             color:"chocolate",
@@ -133,6 +133,9 @@
         }
         function getData3(){
             console.log(SE3.Selected)
+        }
+        SE3.onchange=function(){//监听表单所选内容改变事件
+            console.log(this.Selected)
         }
     </script>
 

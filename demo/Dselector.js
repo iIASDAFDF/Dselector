@@ -44,6 +44,7 @@ function Dselect(param){//构造器
             padding-bottom:5px;
             padding-right:25px;
             box-sizing:border-box;
+            outline:none;
         `,
         TapBtnStyle:`
             height:100%;
@@ -64,6 +65,9 @@ function Dselect(param){//构造器
             border:6px solid #ccc;
             border-top:10px solid #666;
             position:relative;
+            font-weight:bold;
+            transition:.5s;
+            transform-origin:50% 30%;
             top:4px  
         `,
         selectItemStyle:`
@@ -93,10 +97,13 @@ function Dselect(param){//构造器
         CloseIconStyle:`
            display: flex;
            position: absolute;
-           font-size:14px;
-           right:10px;
+           font-size:20px;
            top:0px;
+           right:0px;
            height:100%;
+           width:20px;
+           z-index:9;
+           text-align:center;
            align-items:center;
            color:#fff;
            font-family:"微软雅黑";
@@ -122,7 +129,6 @@ Dselect.prototype.createDom=function(){//创建基本dom元素
     this.InsurBox=document.createElement('div')
     this.Select.className="select"
     if(this.module=='typeTwo'){//如果是模式二
-        console.log(8888)
         this.TapBtn=document.createElement('div')//new
         this.Icon=document.createElement('i')//new  
         this.TapBtn.appendChild(this.Icon)//new
@@ -200,52 +206,58 @@ Dselect.prototype.setStyle=function(){//设置样式
 Dselect.prototype.methods=function(){//定义点击事件
     var that=this
     this.Select.onclick=function(e){//点击选项
-        //this.style.display='none'
         if(e.target.className=='option'){
-            //console.log(e.target.info)
-            //that.Select.style.display='none'
-            if(that.Selected.indexOf(e.target.info)==-1){
-                if(!that.group){//控制下拉表单所能选择的个数
-                    that.Selected.push(e.target.info)
-                }else{
-                    if(that.group==1){
-                        that.Selected=[e.target.info]
+            if(that.group==1){
+                that.Selected=[e.target.info]
+                that.SelectedChange()
+            }
+            else{
+                if(that.Selected.indexOf(e.target.info)==-1){
+                    if(that.Selected.length==that.group){
+                        return true
                     }else{
-                        if(that.Selected.length==that.group){
-                            return true
-                        }else{
-                            that.Selected.push(e.target.info)
-                        }
+                        that.Selected.push(e.target.info)
                     }
+                    if(that.Icon){
+                        that.Icon.style.transform="rotateZ(0deg)"
+                    }
+                    that.SelectedChange()//增加选择的元素
+                    that.Select.style.display='none'
+                    that.Box.style.border="1px solid #ccc"
                 }
-                that.SelectedChange()//增加选择的元素
-                that.Select.style.display='none'
-                that.Box.style.border="1px solid #ccc"
             }
         }
     }
     this.InsurBox.onclick=function(e){
+        that.Box.style.outline='none'
         if(that.Select.style.display=='none'){
             that.Select.style.display='block'
             that.Box.style.border="1px solid "+that.color
+            if(that.Icon){
+                that.Icon.style.transform="rotateZ(180deg)"
+            }
         }else{
             that.Select.style.display='none'
             that.Box.style.border="1px solid #ccc"
+            if(that.Icon){
+                that.Icon.style.transform="rotateZ(0deg)"
+            }
         }
     }
     this.InsurBox.onfocus=function(e){//typeTwo
         this.onkeyup=function(){
-            that.Selected[0]=this.innerHTML
+            var zhi=this.innerText//输入的值
+            that.Selected[0]=zhi
+            that.onchange()
             if(that.param.match){//匹配模式 开！
                 that.Select.innerHTML=''//清空下拉框
                 that.options=[]//清空选项组
-                var zhi=this.innerHTML//输入的值
-                if(this.innerHTML==''){
+                if(zhi==''){
                     that.buildItem()
                     that.buildItemStyle()
                 }else{
                     that.Data.forEach(function(item){
-                        var str=that.key?item[that.key].toString():item
+                        var str=that.key?item[that.key].toString():item.toString()
                         if(that.param.match=="greedy"){//贪婪匹配
                             var selectItem=document.createElement('div')
                             selectItem.className='option'
@@ -317,7 +329,7 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
             var CloseIcon=document.createElement('i')
             InsurList.setAttribute('style',that.allStyle.InsurListStyle)
             InsurList.style.background=that.color
-            CloseIcon.innerHTML='X'
+            CloseIcon.innerHTML='×'
             CloseIcon.setAttribute('style',that.allStyle.CloseIconStyle)
             CloseIcon.info=item
             if(that.param.key){
@@ -329,10 +341,11 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
             that.SelectedDom.push(InsurList)
             that.InsurBox.appendChild(InsurList)
         })
+
         this.SelectedDom.forEach(function(item){//删除选项
             item.onclick=function(e){
                 e.stopPropagation()
-                if(e.target.nodeName=='I'){
+                if(e.target.nodeName=='I'||e.target.nodeName=='FONT'){
                     var index=that.Selected.indexOf(e.target.info)
                     that.Selected.splice(index,1)
                     that.SelectedChange()
@@ -352,10 +365,13 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
     else{
 
     }
-    //this.emit()
+    if(this.onchange){
+        this.onchange()
+    }
 }
 
 Dselect.prototype.emit=function(){//输出数据
     //console.log(this.Selected)
     return this.Selected
 }
+Dselect.prototype.onchange=''

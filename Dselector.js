@@ -66,6 +66,8 @@ function Dselect(param){//构造器
             border-top:10px solid #666;
             position:relative;
             font-weight:bold;
+            transition:.5s;
+            transform-origin:50% 30%;
             top:4px  
         `,
         selectItemStyle:`
@@ -204,27 +206,25 @@ Dselect.prototype.setStyle=function(){//设置样式
 Dselect.prototype.methods=function(){//定义点击事件
     var that=this
     this.Select.onclick=function(e){//点击选项
-        //this.style.display='none'
         if(e.target.className=='option'){
-            //console.log(e.target.info)
-            //that.Select.style.display='none'
-            if(that.Selected.indexOf(e.target.info)==-1){
-                if(!that.group){//控制下拉表单所能选择的个数
-                    that.Selected.push(e.target.info)
-                }else{
-                    if(that.group==1){
-                        that.Selected=[e.target.info]
+            if(that.group==1){
+                that.Selected=[e.target.info]
+                that.SelectedChange()
+            }
+            else{
+                if(that.Selected.indexOf(e.target.info)==-1){
+                    if(that.Selected.length==that.group){
+                        return true
                     }else{
-                        if(that.Selected.length==that.group){
-                            return true
-                        }else{
-                            that.Selected.push(e.target.info)
-                        }
+                        that.Selected.push(e.target.info)
                     }
+                    if(that.Icon){
+                        that.Icon.style.transform="rotateZ(0deg)"
+                    }
+                    that.SelectedChange()//增加选择的元素
+                    that.Select.style.display='none'
+                    that.Box.style.border="1px solid #ccc"
                 }
-                that.SelectedChange()//增加选择的元素
-                that.Select.style.display='none'
-                that.Box.style.border="1px solid #ccc"
             }
         }
     }
@@ -233,16 +233,22 @@ Dselect.prototype.methods=function(){//定义点击事件
         if(that.Select.style.display=='none'){
             that.Select.style.display='block'
             that.Box.style.border="1px solid "+that.color
+            if(that.Icon){
+                that.Icon.style.transform="rotateZ(180deg)"
+            }
         }else{
             that.Select.style.display='none'
             that.Box.style.border="1px solid #ccc"
+            if(that.Icon){
+                that.Icon.style.transform="rotateZ(0deg)"
+            }
         }
     }
     this.InsurBox.onfocus=function(e){//typeTwo
         this.onkeyup=function(){
             var zhi=this.innerText//输入的值
-            console.log(zhi)
             that.Selected[0]=zhi
+            that.onchange()
             if(that.param.match){//匹配模式 开！
                 that.Select.innerHTML=''//清空下拉框
                 that.options=[]//清空选项组
@@ -251,7 +257,7 @@ Dselect.prototype.methods=function(){//定义点击事件
                     that.buildItemStyle()
                 }else{
                     that.Data.forEach(function(item){
-                        var str=that.key?item[that.key].toString():item
+                        var str=that.key?item[that.key].toString():item.toString()
                         if(that.param.match=="greedy"){//贪婪匹配
                             var selectItem=document.createElement('div')
                             selectItem.className='option'
@@ -335,11 +341,11 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
             that.SelectedDom.push(InsurList)
             that.InsurBox.appendChild(InsurList)
         })
+
         this.SelectedDom.forEach(function(item){//删除选项
             item.onclick=function(e){
                 e.stopPropagation()
                 if(e.target.nodeName=='I'||e.target.nodeName=='FONT'){
-                    console.log(77)
                     var index=that.Selected.indexOf(e.target.info)
                     that.Selected.splice(index,1)
                     that.SelectedChange()
@@ -359,10 +365,13 @@ Dselect.prototype.SelectedChange=function(){//改变选择的选项
     else{
 
     }
-    //this.emit()
+    if(this.onchange){
+        this.onchange()
+    }
 }
 
 Dselect.prototype.emit=function(){//输出数据
     //console.log(this.Selected)
     return this.Selected
 }
+Dselect.prototype.onchange=''
