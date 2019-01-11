@@ -209,23 +209,22 @@ Dselect.prototype.methods=function(){//定义点击事件
         if(e.target.className=='option'){
             if(that.group==1){
                 that.Selected=[e.target.info]
-                that.SelectedChange()
             }
             else{
                 if(that.Selected.indexOf(e.target.info)==-1){
-                    if(that.Selected.length==that.group){
-                        return true
-                    }else{
+                    if(!that.group||that.Selected.length<that.group){
                         that.Selected.push(e.target.info)
+                    }else{
+                        return false
                     }
-                    if(that.Icon){
-                        that.Icon.style.transform="rotateZ(0deg)"
-                    }
-                    that.SelectedChange()//增加选择的元素
-                    that.Select.style.display='none'
-                    that.Box.style.border="1px solid #ccc"
                 }
             }
+            if(that.Icon){
+                that.Icon.style.transform="rotateZ(0deg)"
+            }
+            that.SelectedChange()//增加选择的元素
+            that.Select.style.display='none'
+            that.Box.style.border="1px solid #ccc"
         }
     }
     this.InsurBox.onclick=function(e){
