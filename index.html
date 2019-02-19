@@ -141,10 +141,12 @@
         
         function fun(){
             if(typeof WeixinJSBridge!='undefined'){
-                document.addEventListener('WeixinJSBridgeReady', function(){alert(777)})
+                 alert(777)
+            }else{
+                 alert(888)
             }
         }
-        fun()
+        setTimeout(fun,10000)
     </script>
 
 </body>
