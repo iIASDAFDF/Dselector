@@ -141,9 +141,7 @@
         
         function fun(){
             if(typeof WeixinJSBridge!='undefined'){
-                alert('微信')
-            }else{
-                alert('ttt')
+                document.addEventListener('WeixinJSBridgeReady', function(){alert(777)})
             }
         }
         fun()
