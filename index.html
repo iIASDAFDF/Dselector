@@ -138,6 +138,15 @@
         SE3.onchange=function(){//监听表单所选内容改变事件
             console.log(this.Selected)
         }
+        
+        function fun(){
+            if(WeixinJSBridge){
+                console.log('微信')
+            }else{
+                console.log('ttt')
+            }
+        }
+        fun()
     </script>
 
 </body>
